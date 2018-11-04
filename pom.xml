@@ -52,8 +52,116 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+        <groupId>cz.habarta.typescript-generator</groupId>
+        <artifactId>typescript-generator-maven-plugin</artifactId>
+        <version>2.7.447</version>
+        <executions>
+          <execution>
+            <id>generate</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <jsonLibrary>jackson2</jsonLibrary>
+              <customTypeMappings>
+                <mapping>java.util.Date:any</mapping>
+                <mapping>java.time.LocalDate:any</mapping>
+                <mapping>java.time.LocalDateTime:any</mapping>
+                <mapping>java.time.LocalTime:any</mapping>
+                <mapping>javax.xml.datatype.XMLGregorianCalendar:any</mapping>
+              </customTypeMappings>
+              <classPatterns>
+                <pattern>com.example.testangular.dto.**</pattern>
+              </classPatterns>
+              <classes>
+                <class>org.springframework.data.domain.Page</class>
+                <class>org.springframework.data.domain.Slice</class>
+              </classes>
+              <excludeClassPatterns>
+                <pattern>**.**_</pattern>
+              </excludeClassPatterns>
+              <excludeClasses>
+                <class>org.springframework.data.domain.Sort</class>
+                <class>org.springframework.data.domain.Sort</class>
+                <class>java.io.Serializable</class>
+                <class>java.lang.Iterable</class>
+              </excludeClasses>
+              <outputFile>src/main/web/src/generated-model/model.d.ts</outputFile>
+              <outputKind>module</outputKind>
+              <optionalProperties>all</optionalProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<executions>
+						<execution>
+							<id>remove node_modules</id>
+							<goals>
+							<goal>exec</goal>
+							</goals>
+							<phase>process-classes</phase>
+							<configuration>
+							<executable>rm</executable>
+							<arguments>
+								<argument>-rf</argument>
+								<argument>node_modules</argument>
+							</arguments>
+							<workingDirectory>${project.basedir}/src/main/web</workingDirectory>
+							</configuration>
+						</execution>
+						<!-- Required: The following will ensure `npm install` is called
+						before anything else during the 'Default Lifecycle' -->
+						<execution>
+							<id>npm install (process-classes)</id>
+							<goals>
+							<goal>exec</goal>
+							</goals>
+							<phase>process-classes</phase>
+							<configuration>
+							<executable>npm</executable>
+							<arguments>
+								<argument>install</argument>
+							</arguments>
+							<workingDirectory>${project.basedir}/src/main/web</workingDirectory>
+							</configuration>
+						</execution>
+						<execution>
+							<id>ng build</id>
+							<goals>
+							<goal>exec</goal>
+							</goals>
+							<phase>process-classes</phase>
+							<configuration>
+							<executable>node</executable>
+							<arguments>
+								<argument>--max_old_space_size=3048</argument>
+								<argument>./node_modules/.bin/ng</argument>
+								<argument>build</argument>
+								<argument>--prod</argument>
+								<argument>--base-href</argument>
+								<argument>/demo/</argument>
+							</arguments>
+							<workingDirectory>${project.basedir}/src/main/web</workingDirectory>
+							</configuration>
+						</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
