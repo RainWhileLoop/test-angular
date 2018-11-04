@@ -1,9 +1,9 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.7.447 on 2018-11-04 13:59:29.
+// Generated using typescript-generator version 2.7.447 on 2018-11-04 14:28:24.
 
 export interface Page<T> extends Slice<T> {
-    totalElements?: number;
     totalPages?: number;
+    totalElements?: number;
 }
 
 export interface Slice<T> extends Streamable<T> {
@@ -11,19 +11,19 @@ export interface Slice<T> extends Streamable<T> {
     content?: T[];
     number?: number;
     sort?: any;
-    first?: boolean;
-    pageable?: Pageable;
-    last?: boolean;
     numberOfElements?: number;
+    pageable?: Pageable;
+    first?: boolean;
+    last?: boolean;
 }
 
 export interface Pageable {
     offset?: number;
     sort?: any;
+    unpaged?: boolean;
+    pageSize?: number;
     paged?: boolean;
     pageNumber?: number;
-    pageSize?: number;
-    unpaged?: boolean;
 }
 
 export interface Streamable<T> extends Supplier<Stream<T>> {
