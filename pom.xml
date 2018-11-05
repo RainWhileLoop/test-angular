@@ -73,6 +73,7 @@
               </customTypeMappings>
               <classPatterns>
                 <pattern>com.example.testangular.dto.**</pattern>
+                <pattern>com.example.testangular.domain.*</pattern>
               </classPatterns>
               <classes>
                 <class>org.springframework.data.domain.Page</class>
